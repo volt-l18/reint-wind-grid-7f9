@@ -1,8 +1,11 @@
-from fastapi import FastAPI, Query, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+import os
+import calendar
 from typing import Optional
 from datetime import datetime, timedelta
-import calendar
+from fastapi import FastAPI, Query, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from .models import DayAheadResponse, MonthlyOverviewResponse, MonthlySummaryItem
 from .processing import processor
 
@@ -29,7 +32,6 @@ async def get_day_ahead_analysis(
     date: str = Query(..., description="Target delivery date in YYYY-MM-DD format (e.g. 2026-01-02)")
 ):
     try:
-        # Validate format
         datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date format. Expected YYYY-MM-DD.")
@@ -58,7 +60,6 @@ async def get_monthly_overview(
     total_forecast = 0.0
     valid_days = 0
 
-    # Limit to first 7 days for quick overview or all days
     for day in range(1, num_days + 1):
         date_str = f"{year:04d}-{month_num:02d}-{day:02d}"
         try:
@@ -92,3 +93,22 @@ async def get_monthly_overview(
         total_forecast_mwh=round(total_forecast, 1),
         days=days_summary
     )
+
+# Static file serving if frontend/dist is built (allows single-origin all-in-one deployment)
+frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
+if os.path.exists(frontend_dist):
+    assets_dir = os.path.join(frontend_dist, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        if full_path.startswith("api/") or full_path in ("health", "docs", "openapi.json", "redoc"):
+            raise HTTPException(status_code=404, detail="API route not found")
+        file_path = os.path.join(frontend_dist, full_path)
+        if full_path and os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        index_file = os.path.join(frontend_dist, "index.html")
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+        raise HTTPException(status_code=404, detail="Frontend index.html not found")

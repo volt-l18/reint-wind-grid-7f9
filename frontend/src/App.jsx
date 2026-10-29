@@ -32,6 +32,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const API_BASE = import.meta.env.VITE_API_URL || '';
+
   // Quick select dates in Jan 2026
   const sampleDates = [
     '2026-01-01', '2026-01-02', '2026-01-03', '2026-01-04', 
@@ -43,7 +45,7 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/wind/day-ahead?date=${date}`);
+      const res = await fetch(`${API_BASE}/api/wind/day-ahead?date=${date}`);
       if (!res.ok) {
         throw new Error(`Server returned ${res.status}: ${res.statusText}`);
       }
