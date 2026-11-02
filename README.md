@@ -122,6 +122,14 @@ Open `http://localhost:5173`. The Vite proxy will automatically route `/api/*` c
 
 ---
 
+### Option C: 1-Click Cloud Deployment (Render Blueprint)
+This repository includes a production multi-stage [`Dockerfile`](./Dockerfile) and [`render.yaml`](./render.yaml) Blueprint:
+1. In Render ([dashboard.render.com](https://dashboard.render.com)), click **New + > Blueprint**.
+2. Connect this repository (`volt-l18/reint-wind-grid-7f9`) and click **Apply**.
+3. Render automatically compiles the React 19 frontend and runs the FastAPI backend engine as a single unified service.
+
+---
+
 ## 5. Mathematical Metrics & Formulas
 
 For $N = 24$ hourly settlement windows across delivery date $D$:
