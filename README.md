@@ -5,6 +5,8 @@
 > **Domain:** UK Day-Ahead Electricity Market (EPEX SPOT / Nord Pool)  
 > **Evaluation Period:** January 2026  
 > **Data Provider:** Elexon BMRS (Balancing Mechanism Reporting Service)  
+> **Live Demo:** [https://reint-wind-grid.onrender.com](https://reint-wind-grid.onrender.com)  
+> **Demo Video:** [https://youtu.be/akqJYWN3RfY](https://youtu.be/akqJYWN3RfY) (5:23 Full Walkthrough)  
 
 ---
 
