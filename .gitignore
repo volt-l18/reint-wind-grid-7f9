@@ -77,3 +77,10 @@ pnpm-debug.log*
 *.sw?
 .DS_Store
 Thumbs.db
+
+# Media & Temporary Video generation assets
+*.mp4
+*.mp3
+assets/audio/
+assets/video_preview*/
+
